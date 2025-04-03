@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: cliente-crm-integracao
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8080
+
+api:
+  clientes:
+    url: https://xyz.net/api/v1/clientes
+
+app:
+  kafka:
+    topic: CLIENTES
+  integracao:
+    tamanho-grupo: 15
+
+logging:
+  level:
+    com.exemplo.clientecrm: INFO 

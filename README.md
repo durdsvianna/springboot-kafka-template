@@ -64,4 +64,4 @@ mvn test
 
 - Integração bem-sucedida com poucos clientes (10 clientes)
 - Integração com divisão em grupos (28 clientes)
-- Integração sem clientes para processar
+- Integração sem clientes para processar 
