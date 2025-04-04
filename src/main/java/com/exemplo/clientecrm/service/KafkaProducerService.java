@@ -8,6 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,7 +24,11 @@ public class KafkaProducerService {
 
     public CompletableFuture<SendResult<String, Object>> enviarClientesParaKafka(List<Cliente> clientes) {
         log.info("Enviando {} clientes para o tópico {}", clientes.size(), topic);
-        return kafkaTemplate.send(topic, clientes)
+        
+        // Create a new ArrayList to avoid sending a sublist or other ArrayList implementation
+        ArrayList<Cliente> clientesParaEnviar = new ArrayList<>(clientes);
+        
+        return kafkaTemplate.send(topic, clientesParaEnviar)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("Mensagem enviada com sucesso para o tópico {}: offset=[{}]", 

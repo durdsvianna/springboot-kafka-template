@@ -49,7 +49,7 @@ public class IntegracaoClienteService {
         
         for (int i = 0; i < totalClientes; i += tamanhoGrupo) {
             int fim = Math.min(i + tamanhoGrupo, totalClientes);
-            List<Cliente> grupo = clientes.subList(i, fim);
+            List<Cliente> grupo = new ArrayList<>(clientes.subList(i, fim));
             grupos.add(grupo);
             log.debug("Criado grupo {} com {} clientes", grupos.size(), grupo.size());
         }

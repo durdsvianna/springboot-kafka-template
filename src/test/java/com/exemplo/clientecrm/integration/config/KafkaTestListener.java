@@ -2,6 +2,7 @@ package com.exemplo.clientecrm.integration.config;
 
 import com.exemplo.clientecrm.model.Cliente;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class KafkaTestListener {
 
     @Getter
@@ -19,7 +21,9 @@ public class KafkaTestListener {
 
     @KafkaListener(topics = "${app.kafka.topic:CLIENTES}", groupId = "test-group")
     public void receberMensagem(List<Cliente> clientes) {
-        mensagensRecebidas.add(clientes);
+        log.info("Mensagem recebida com {} clientes", clientes.size());
+        // Create a new ArrayList to avoid any reference issues
+        mensagensRecebidas.add(new ArrayList<>(clientes));
         latch.countDown();
     }
 
