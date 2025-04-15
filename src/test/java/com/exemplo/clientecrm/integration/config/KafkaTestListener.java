@@ -1,8 +1,9 @@
 package com.exemplo.clientecrm.integration.config;
 
-import com.exemplo.clientecrm.model.Cliente;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +16,18 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class KafkaTestListener {
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Getter
-    private final List<List<Cliente>> mensagensRecebidas = new ArrayList<>();
+    private final List<List<?>> mensagensRecebidas = new ArrayList<>();
     private CountDownLatch latch = new CountDownLatch(1);
 
-    @KafkaListener(topics = "${app.kafka.topic:CLIENTES}", groupId = "test-group")
-    public void receberMensagem(List<Cliente> clientes) {
-        log.info("Mensagem recebida com {} clientes", clientes.size());
+    @KafkaListener(topics = {"${app.kafka.topic.clientes:CLIENTES}", "${app.kafka.topic.produtos:PRODUTOS}"}, groupId = "test-group")
+    public void receberMensagem(List<?> objetos) {
+        log.info("Mensagem recebida com {} objetos", objetos.size());
         // Create a new ArrayList to avoid any reference issues
-        mensagensRecebidas.add(new ArrayList<>(clientes));
+        mensagensRecebidas.add(new ArrayList<>(objetos));
         latch.countDown();
     }
 
@@ -44,17 +48,19 @@ public class KafkaTestListener {
         return mensagensRecebidas.isEmpty();
     }
 
-    public List<Cliente> getPrimeiraMensagem() {
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getPrimeiraMensagem() {
         if (mensagensRecebidas.isEmpty()) {
             return List.of();
         }
-        return mensagensRecebidas.get(0);
+        return (List<T>) mensagensRecebidas.get(0);
     }
 
-    public List<Cliente> getSegundaMensagem() {
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getSegundaMensagem() {
         if (mensagensRecebidas.size() < 2) {
             return List.of();
         }
-        return mensagensRecebidas.get(1);
+        return (List<T>) mensagensRecebidas.get(1);
     }
 } 

@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @CucumberContextConfiguration
 @SpringBootTest(classes = ClienteCrmApplication.class)
 @ContextConfiguration(classes = TestConfig.class)
-@EmbeddedKafka(partitions = 1, topics = {"CLIENTES"})
+@EmbeddedKafka(partitions = 1, topics = {"CLIENTES", "PRODUTOS"})
 @ActiveProfiles("test")
 public class IntegracaoClientesSteps {
 

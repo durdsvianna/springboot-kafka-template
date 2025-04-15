@@ -18,6 +18,8 @@ spring:
       
 app:
   kafka:
-    topic: CLIENTES
+    topic:
+      clientes: CLIENTES
+      produtos: PRODUTOS
   integracao:
     tamanho-grupo: 15 

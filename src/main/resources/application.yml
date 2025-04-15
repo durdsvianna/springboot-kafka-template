@@ -1,23 +1,35 @@
 spring:
   application:
-    name: cliente-crm-integracao
+    name: cliente-produto-integracao
   kafka:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    admin:
+      auto-create: true
+      properties:
+        cleanup.policy: delete
+    template:
+      default-topic: CLIENTES
+    properties:
+      spring.json.trusted.packages: com.exemplo.clientecrm.model
   profiles:
-        active: test
+    active: test
 server:
   port: 8080
 
 api:
   clientes:
     url: https://xyz.net/api/v1/clientes
+  produtos:
+    url: https://xyz.net/api/v1/produtos
 
 app:
   kafka:
-    topic: CLIENTES
+    topic:
+      clientes: CLIENTES
+      produtos: PRODUTOS
   integracao:
     tamanho-grupo: 15
 
