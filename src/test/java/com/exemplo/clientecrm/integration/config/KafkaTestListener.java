@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -22,8 +23,17 @@ public class KafkaTestListener {
     @Getter
     private final List<List<?>> mensagensRecebidas = new ArrayList<>();
     private CountDownLatch latch = new CountDownLatch(1);
+    
+    @PostConstruct
+    public void init() {
+        log.info("KafkaTestListener initialized and ready to receive messages");
+    }
 
-    @KafkaListener(topics = {"${app.kafka.topic.clientes:CLIENTES}", "${app.kafka.topic.produtos:PRODUTOS}"}, groupId = "test-group")
+    @KafkaListener(
+        topics = {"${app.kafka.topic.clientes:CLIENTES}", "${app.kafka.topic.produtos:PRODUTOS}"}, 
+        groupId = "test-group",
+        containerFactory = "kafkaListenerContainerFactory"
+    )
     public void receberMensagem(List<?> objetos) {
         log.info("Mensagem recebida com {} objetos", objetos.size());
         // Create a new ArrayList to avoid any reference issues
